@@ -3,7 +3,7 @@
 <head>
    <meta charset="UTF-8">
    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-   <title>Конвертер температуры</title>
+   <title>Валидация Email</title>
    <style>
        body {
            font-family: Arial, sans-serif;
@@ -13,7 +13,7 @@
            justify-content: center;
            height: 100vh;
            margin: 0;
-           background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
+           background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
        }
        .container {
            text-align: center;
@@ -24,21 +24,9 @@
            max-width: 500px;
            width: 90%;
        }
-       .converter {
-           display: grid;
-           grid-template-columns: 1fr auto 1fr;
-           gap: 20px;
-           align-items: end;
-           margin: 30px 0;
-       }
        .input-group {
-           text-align: center;
-       }
-       label {
-           display: block;
-           margin-bottom: 10px;
-           font-weight: bold;
-           color: #333;
+           position: relative;
+           margin: 30px 0;
        }
        input {
            width: 100%;
@@ -46,171 +34,230 @@
            font-size: 18px;
            border: 3px solid #ddd;
            border-radius: 10px;
-           text-align: center;
-           transition: border-color 0.3s;
+           transition: all 0.3s;
+           box-sizing: border-box;
        }
        input:focus {
-           border-color: #74b9ff;
            outline: none;
+           border-color: #667eea;
        }
-       .arrow {
-           font-size: 24px;
-           font-weight: bold;
-           color: #74b9ff;
-           display: flex;
-           align-items: center;
-           justify-content: center;
-           height: 60px;
+       input.valid {
+           border-color: #00b894;
+           background-color: #f0fff4;
+       }
+       input.invalid {
+           border-color: #ff7675;
+           background-color: #fff5f5;
        }
        button {
            padding: 15px 30px;
            font-size: 18px;
-           background: linear-gradient(135deg, #74b9ff, #0984e3);
+           background: linear-gradient(135deg, #667eea, #764ba2);
            color: white;
            border: none;
            border-radius: 10px;
            cursor: pointer;
            transition: all 0.3s;
            font-weight: bold;
-           margin: 10px 5px;
+           width: 100%;
        }
        button:hover {
-           transform: scale(1.05);
+           transform: scale(1.02);
            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
        }
        .result {
            margin-top: 30px;
            padding: 20px;
-           background: linear-gradient(135deg, #e8f4ff, #d0e7ff);
            border-radius: 10px;
-           border-left: 5px solid #74b9ff;
-       }
-       .result-value {
-           font-size: 24px;
+           font-size: 18px;
            font-weight: bold;
-           color: #333;
-           margin: 10px 0;
+           min-height: 60px;
+           display: flex;
+           align-items: center;
+           justify-content: center;
+           transition: all 0.3s;
        }
-       .formula {
-           margin-top: 20px;
-           font-size: 14px;
-           color: #666;
+       .valid-result {
+           background-color: #d4edda;
+           color: #155724;
+           border: 3px solid #c3e6cb;
+       }
+       .invalid-result {
+           background-color: #f8d7da;
+           color: #721c24;
+           border: 3px solid #f5c6cb;
+       }
+       .info-result {
+           background-color: #e2e3e5;
+           color: #383d41;
+           border: 3px solid #d6d8db;
+       }
+       .validation-rules {
+           text-align: left;
+           margin-top: 30px;
+           padding: 20px;
            background: #f8f9fa;
-           padding: 10px;
-           border-radius: 5px;
+           border-radius: 10px;
+           border-left: 4px solid #667eea;
        }
-       .comparison {
+       .validation-rules h3 {
+           margin-top: 0;
+           color: #333;
+       }
+       .rule {
+           margin: 10px 0;
+           padding-left: 20px;
+           position: relative;
+       }
+       .rule:before {
+           content: "•";
+           position: absolute;
+           left: 0;
+           color: #667eea;
+           font-weight: bold;
+       }
+       .valid .rule:before {
+           color: #00b894;
+       }
+       .examples {
            display: grid;
            grid-template-columns: 1fr 1fr;
-           gap: 20px;
+           gap: 10px;
            margin-top: 20px;
        }
-       .scale {
-           padding: 15px;
-           border-radius: 10px;
+       .example {
+           padding: 10px;
+           border-radius: 5px;
+           font-size: 14px;
            text-align: center;
        }
-       .celsius {
-           background: #e3f2fd;
-           border: 2px solid #2196f3;
+       .valid-example {
+           background-color: #d4edda;
+           color: #155724;
        }
-       .fahrenheit {
-           background: #fff3e0;
-           border: 2px solid #ff9800;
+       .invalid-example {
+           background-color: #f8d7da;
+           color: #721c24;
        }
    </style>
 </head>
 <body>
    <div class="container">
-       <h1>Конвертер температуры</h1>
+       <h1>Валидация Email</h1>
+       <p>Проверьте корректность email-адреса:</p>
        
-       <div class="converter">
-           <div class="input-group">
-               <label for="celsius">Цельсий (°C)</label>
-               <input type="number" id="celsius" placeholder="0" oninput="convertFromCelsius()">
-           </div>
-           
-           <div class="arrow">⇄</div>
-           
-           <div class="input-group">
-               <label for="fahrenheit">Фаренгейт (°F)</label>
-               <input type="number" id="fahrenheit" placeholder="32" oninput="convertFromFahrenheit()">
-           </div>
+       <div class="input-group">
+           <input type="text" id="emailInput" placeholder="example@domain.com" 
+                  oninput="validateEmailLive()" onkeypress="handleKeyPress(event)">
        </div>
        
-       <div>
-           <button onclick="convertFromCelsius()">Цельсий → Фаренгейт</button>
-           <button onclick="convertFromFahrenheit()">Фаренгейт → Цельсий</button>
-           <button onclick="resetConverter()" style="background: linear-gradient(135deg, #636e72, #2d3436);">Сбросить</button>
+       <button onclick="validateEmail()">Проверить Email</button>
+       
+       <div class="result info-result" id="result">
+           Введите email для проверки
        </div>
        
-       <div class="result" id="result">
-           <div id="resultText">Введите температуру для конвертации</div>
-           <div class="result-value" id="resultValue"></div>
+       <div class="validation-rules">
+           <h3>Правила валидного email:</h3>
+           <div class="rule" id="rule1">Должен содержать символ @</div>
+           <div class="rule" id="rule2">Должен иметь домен (часть после @)</div>
+           <div class="rule" id="rule3">Должен иметь точку в домене</div>
+           <div class="rule" id="rule4">Не должен содержать пробелов</div>
        </div>
        
-       <div class="formula">
-           <strong>Формулы:</strong><br>
-           °F = (°C × 9/5) + 32<br>
-           °C = (°F - 32) × 5/9
-       </div>
-       
-       <div class="comparison">
-           <div class="scale celsius">
-               <h3>Цельсий (°C)</h3>
-               <p>0°C - замерзание воды</p>
-               <p>100°C - кипение воды</p>
-               <p>37°C - температура тела</p>
-           </div>
-           <div class="scale fahrenheit">
-               <h3>Фаренгейт (°F)</h3>
-               <p>32°F - замерзание воды</p>
-               <p>212°F - кипение воды</p>
-               <p>98.6°F - температура тела</p>
-           </div>
+       <div class="examples">
+           <div class="example valid-example">user@mail.com</div>
+           <div class="example valid-example">name.surname@company.org</div>
+           <div class="example invalid-example">usermail.com</div>
+           <div class="example invalid-example">user@mail</div>
        </div>
    </div>
 
    <script>
-       function convertFromCelsius() {
-           const celsius = parseFloat(document.getElementById('celsius').value);
-           if (!isNaN(celsius)) {
-               const fahrenheit = (celsius * 9/5) + 32;
-               document.getElementById('fahrenheit').value = fahrenheit.toFixed(1);
-               updateResult(celsius + '°C = ' + fahrenheit.toFixed(1) + '°F');
-           }
-       }
-
-       function convertFromFahrenheit() {
-           const fahrenheit = parseFloat(document.getElementById('fahrenheit').value);
-           if (!isNaN(fahrenheit)) {
-               const celsius = (fahrenheit - 32) * 5/9;
-               document.getElementById('celsius').value = celsius.toFixed(1);
-               updateResult(fahrenheit + '°F = ' + celsius.toFixed(1) + '°C');
-           }
-       }
-
-       function resetConverter() {
-           document.getElementById('celsius').value = '';
-           document.getElementById('fahrenheit').value = '';
-           document.getElementById('resultText').textContent = 'Введите температуру для конвертации';
-           document.getElementById('resultValue').textContent = '';
-       }
-
-       function updateResult(text) {
-           const resultText = document.getElementById('resultText');
-           const resultValue = document.getElementById('resultValue');
+       function validateEmail() {
+           const email = document.getElementById('emailInput').value.trim();
+           const result = document.getElementById('result');
            
-           resultText.textContent = 'Результат конвертации:';
-           resultValue.textContent = text;
+           if (!email) {
+               result.textContent = 'Пожалуйста, введите email';
+               result.className = 'result info-result';
+               return;
+           }
+           
+           const isValid = checkEmailValidity(email);
+           
+           if (isValid) {
+               result.textContent = '✓ Email корректный!';
+               result.className = 'result valid-result';
+           } else {
+               result.textContent = '✗ Email некорректный!';
+               result.className = 'result invalid-result';
+           }
            
            // Анимация
-           resultValue.style.animation = 'none';
+           result.style.animation = 'none';
            setTimeout(() => {
-               resultValue.style.animation = 'pop 0.5s';
+               result.style.animation = 'pop 0.5s';
            }, 10);
        }
-
+       
+       function validateEmailLive() {
+           const email = document.getElementById('emailInput').value.trim();
+           const input = document.getElementById('emailInput');
+           
+           if (!email) {
+               input.className = '';
+               updateRules([]);
+               return;
+           }
+           
+           const validation = checkEmailRules(email);
+           const isValid = validation.isValid;
+           const passedRules = validation.passedRules;
+           
+           input.className = isValid ? 'valid' : 'invalid';
+           updateRules(passedRules);
+       }
+       
+       function checkEmailValidity(email) {
+           const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+           return emailRegex.test(email);
+       }
+       
+       function checkEmailRules(email) {
+           const rules = [
+               { id: 'rule1', test: email.includes('@') },
+               { id: 'rule2', test: email.split('@')[1] && email.split('@')[1].length > 0 },
+               { id: 'rule3', test: email.includes('.') && email.split('@')[1] && email.split('@')[1].includes('.') },
+               { id: 'rule4', test: !email.includes(' ') }
+           ];
+           
+           const passedRules = rules.filter(rule => rule.test).map(rule => rule.id);
+           const isValid = rules.every(rule => rule.test);
+           
+           return { isValid, passedRules };
+       }
+       
+       function updateRules(passedRules) {
+           const rules = ['rule1', 'rule2', 'rule3', 'rule4'];
+           rules.forEach(ruleId => {
+               const ruleElement = document.getElementById(ruleId);
+               if (passedRules.includes(ruleId)) {
+                   ruleElement.style.color = '#00b894';
+                   ruleElement.style.fontWeight = 'bold';
+               } else {
+                   ruleElement.style.color = '#721c24';
+                   ruleElement.style.fontWeight = 'normal';
+               }
+           });
+       }
+       
+       function handleKeyPress(event) {
+           if (event.key === 'Enter') {
+               validateEmail();
+           }
+       }
+       
        // Добавляем CSS для анимации
        const style = document.createElement('style');
        style.textContent = `
