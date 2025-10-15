@@ -3,7 +3,7 @@
 <head>
    <meta charset="UTF-8">
    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-   <title>Генератор случайных чисел</title>
+   <title>Проверка четности</title>
    <style>
        body {
            font-family: Arial, sans-serif;
@@ -13,7 +13,7 @@
            justify-content: center;
            height: 100vh;
            margin: 0;
-           background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+           background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
        }
        .container {
            text-align: center;
@@ -24,25 +24,24 @@
            max-width: 500px;
            width: 90%;
        }
-       .number-display {
-           font-size: 80px;
-           font-weight: bold;
-           color: #333;
-           margin: 30px 0;
-           font-family: 'Courier New', monospace;
-           height: 100px;
-           display: flex;
-           align-items: center;
-           justify-content: center;
-           background: linear-gradient(135deg, #667eea, #764ba2);
-           -webkit-background-clip: text;
-           -webkit-text-fill-color: transparent;
-           background-clip: text;
+       input {
+           width: 200px;
+           padding: 15px;
+           font-size: 18px;
+           border: 3px solid #ddd;
+           border-radius: 10px;
+           text-align: center;
+           margin: 20px 0;
+           transition: border-color 0.3s;
+       }
+       input:focus {
+           border-color: #ff6b6b;
+           outline: none;
        }
        button {
            padding: 15px 30px;
            font-size: 18px;
-           background: linear-gradient(135deg, #667eea, #764ba2);
+           background: linear-gradient(135deg, #ff6b6b, #ffa500);
            color: white;
            border: none;
            border-radius: 10px;
@@ -54,126 +53,125 @@
            transform: scale(1.05);
            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
        }
-       .settings {
-           margin: 20px 0;
+       .result {
+           margin-top: 30px;
+           padding: 20px;
+           border-radius: 10px;
+           font-size: 24px;
+           font-weight: bold;
+           min-height: 60px;
            display: flex;
-           gap: 10px;
-           justify-content: center;
            align-items: center;
-           flex-wrap: wrap;
+           justify-content: center;
+           transition: all 0.3s;
        }
-       input {
-           padding: 10px;
-           border: 2px solid #ddd;
+       .even {
+           background-color: #d4edda;
+           color: #155724;
+           border: 3px solid #c3e6cb;
+       }
+       .odd {
+           background-color: #f8d7da;
+           color: #721c24;
+           border: 3px solid #f5c6cb;
+       }
+       .info {
+           background-color: #e2e3e5;
+           color: #383d41;
+           border: 3px solid #d6d8db;
+       }
+       .examples {
+           margin-top: 30px;
+           text-align: left;
+       }
+       .examples h3 {
+           color: #333;
+           margin-bottom: 10px;
+       }
+       .example-list {
+           display: grid;
+           grid-template-columns: 1fr 1fr;
+           gap: 10px;
+       }
+       .example-item {
+           padding: 8px;
            border-radius: 5px;
-           font-size: 16px;
-           width: 80px;
            text-align: center;
        }
-       .history {
-           margin-top: 30px;
+       .example-even {
+           background-color: #d4edda;
+           color: #155724;
        }
-       .history-list {
-           display: flex;
-           flex-wrap: wrap;
-           gap: 10px;
-           justify-content: center;
-           max-height: 100px;
-           overflow-y: auto;
-       }
-       .history-item {
-           background: #f0f0f0;
-           padding: 5px 10px;
-           border-radius: 15px;
-           font-size: 14px;
-       }
-       .stats {
-           margin-top: 20px;
-           font-size: 14px;
-           color: #666;
+       .example-odd {
+           background-color: #f8d7da;
+           color: #721c24;
        }
    </style>
 </head>
 <body>
    <div class="container">
-       <h1>Генератор случайных чисел</h1>
+       <h1>Проверка четности числа</h1>
+       <p>Введите число для проверки:</p>
        
-       <div class="settings">
-           <label>От:</label>
-           <input type="number" id="minValue" value="1" min="0">
-           <label>До:</label>
-           <input type="number" id="maxValue" value="100" min="1">
+       <input type="number" id="numberInput" placeholder="Введите число" onkeypress="handleKeyPress(event)">
+       
+       <button onclick="checkNumber()">Проверить</button>
+       
+       <div class="result info" id="result">
+           Введите число и нажмите "Проверить"
        </div>
        
-       <div class="number-display" id="numberDisplay">
-           ?
-       </div>
-       
-       <button onclick="generateNumber()">Сгенерировать число</button>
-       
-       <div class="history">
-           <h3>История:</h3>
-           <div class="history-list" id="historyList">
-               <!-- История будет добавляться здесь -->
+       <div class="examples">
+           <h3>Примеры:</h3>
+           <div class="example-list">
+               <div class="example-item example-even">2 - четное</div>
+               <div class="example-item example-odd">7 - нечетное</div>
+               <div class="example-item example-even">0 - четное</div>
+               <div class="example-item example-odd">15 - нечетное</div>
            </div>
-       </div>
-       
-       <div class="stats" id="stats">
-           Сгенерировано чисел: 0
        </div>
    </div>
 
    <script>
-       let history = [];
-       let totalGenerated = 0;
-
-       function generateNumber() {
-           const min = parseInt(document.getElementById('minValue').value) || 0;
-           const max = parseInt(document.getElementById('maxValue').value) || 100;
+       function checkNumber() {
+           const input = document.getElementById('numberInput');
+           const number = parseInt(input.value);
+           const result = document.getElementById('result');
            
-           if (min >= max) {
-               alert('Минимальное значение должно быть меньше максимального');
+           if (isNaN(number)) {
+               result.textContent = 'Пожалуйста, введите корректное число';
+               result.className = 'result info';
                return;
            }
            
-           const randomNumber = Math.floor(Math.random() * (max - min + 1)) + min;
-           const numberDisplay = document.getElementById('numberDisplay');
+           const isEven = number % 2 === 0;
            
-           // Анимация
-           numberDisplay.style.animation = 'none';
-           setTimeout(() => {
-               numberDisplay.style.animation = 'pop 0.5s';
-           }, 10);
-           
-           numberDisplay.textContent = randomNumber;
-           
-           // Добавляем в историю
-           history.unshift(randomNumber);
-           if (history.length > 10) {
-               history.pop();
+           if (isEven) {
+               result.textContent = `${number} - четное число`;
+               result.className = 'result even';
+           } else {
+               result.textContent = `${number} - нечетное число`;
+               result.className = 'result odd';
            }
            
-           // Обновляем историю
-           updateHistory();
-           
-           // Обновляем статистику
-           totalGenerated++;
-           document.getElementById('stats').textContent = `Сгенерировано чисел: ${totalGenerated}`;
+           // Анимация
+           result.style.animation = 'none';
+           setTimeout(() => {
+               result.style.animation = 'pop 0.5s';
+           }, 10);
        }
-
-       function updateHistory() {
-           const historyList = document.getElementById('historyList');
-           historyList.innerHTML = history.map(num => 
-               `<div class="history-item">${num}</div>`
-           ).join('');
+       
+       function handleKeyPress(event) {
+           if (event.key === 'Enter') {
+               checkNumber();
+           }
        }
-
+       
        // Добавляем CSS для анимации
        const style = document.createElement('style');
        style.textContent = `
            @keyframes pop {
-               0% { transform: scale(0.8); opacity: 0; }
-               50% { transform: scale(1.2); }
+               0% { transform: scale(0.9); opacity: 0; }
                100% { transform: scale(1); opacity: 1; }
            }
        `;
