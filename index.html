@@ -1,71 +1,88 @@
- <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hello World</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            margin: 0;
-            background-color: #f0f0f0;
-        }
-        .container {
-            text-align: center;
-            background: white;
-            padding: 40px;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
-        button {
-            padding: 12px 24px;
-            font-size: 16px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            margin-top: 20px;
-        }
-        button:hover {
-            background-color: #45a049;
-        }
-        #greeting {
-            font-size: 24px;
-            margin: 20px 0;
-            min-height: 40px;
-            color: #333;
-        }
-    </style>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>Счетчик кликов</title>
+   <style>
+       body {
+           font-family: Arial, sans-serif;
+           display: flex;
+           flex-direction: column;
+           align-items: center;
+           justify-content: center;
+           height: 100vh;
+           margin: 0;
+           background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+       }
+       .container {
+           text-align: center;
+           background: white;
+           padding: 40px;
+           border-radius: 15px;
+           box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+       }
+       .counter {
+           font-size: 48px;
+           font-weight: bold;
+           color: #333;
+           margin: 30px 0;
+       }
+       button {
+           padding: 15px 30px;
+           font-size: 18px;
+           background-color: #ff6b6b;
+           color: white;
+           border: none;
+           border-radius: 8px;
+           cursor: pointer;
+           transition: all 0.3s;
+       }
+       button:hover {
+           background-color: #ff5252;
+           transform: scale(1.05);
+       }
+       .reset-btn {
+           background-color: #4ecdc4;
+           margin-left: 10px;
+       }
+       .reset-btn:hover {
+           background-color: #26a69a;
+       }
+   </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Hello World</h1>
-        <div id="greeting">Привет, мир!</div>
-        <button onclick="changeGreeting()">Изменить приветствие</button>
-    </div>
+   <div class="container">
+       <h1>Счетчик кликов</h1>
+       <div class="counter" id="counter">0</div>
+       <div>
+           <button onclick="incrementCounter()">Кликни меня!</button>
+           <button class="reset-btn" onclick="resetCounter()">Сбросить</button>
+       </div>
+   </div>
 
-    <script>
-        const greetings = [
-            'Привет, мир!',
-            'Hello World!',
-            'Hola Mundo!',
-            'Bonjour le monde!',
-            'Hallo Welt!',
-            'Ciao mondo!',
-            'こんにちは世界！'
-        ];
-        let currentGreeting = 0;
+   <script>
+       let count = 0;
 
-        function changeGreeting() {
-            currentGreeting = (currentGreeting + 1) % greetings.length;
-            document.getElementById('greeting').textContent = greetings[currentGreeting];
-        }
-    </script>
+       function incrementCounter() {
+           count++;
+           updateCounter();
+       }
+
+       function resetCounter() {
+           count = 0;
+           updateCounter();
+       }
+
+       function updateCounter() {
+           const counterElement = document.getElementById('counter');
+           counterElement.textContent = count;
+           
+           // Анимация
+           counterElement.style.transform = 'scale(1.2)';
+           setTimeout(() => {
+               counterElement.style.transform = 'scale(1)';
+           }, 150);
+       }
+   </script>
 </body>
-</html>  
+</html>   
