@@ -3,7 +3,7 @@
 <head>
    <meta charset="UTF-8">
    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-   <title>Список покупок</title>
+   <title>Простая форма</title>
    <style>
        body {
            font-family: Arial, sans-serif;
@@ -23,151 +23,152 @@
            color: #333;
            margin-bottom: 30px;
        }
-       .input-group {
-           display: flex;
-           gap: 10px;
+       .form-group {
            margin-bottom: 20px;
        }
-       input {
-           flex: 1;
+       label {
+           display: block;
+           margin-bottom: 5px;
+           font-weight: bold;
+           color: #555;
+       }
+       input, textarea, select {
+           width: 100%;
            padding: 12px;
            border: 2px solid #ddd;
            border-radius: 8px;
            font-size: 16px;
+           box-sizing: border-box;
+           transition: border-color 0.3s;
        }
-       input:focus {
+       input:focus, textarea:focus, select:focus {
            border-color: #74b9ff;
            outline: none;
        }
+       textarea {
+           height: 100px;
+           resize: vertical;
+       }
        button {
-           padding: 12px 24px;
+           width: 100%;
+           padding: 15px;
            background-color: #74b9ff;
            color: white;
            border: none;
            border-radius: 8px;
+           font-size: 18px;
            cursor: pointer;
-           font-size: 16px;
            transition: background-color 0.3s;
        }
        button:hover {
            background-color: #0984e3;
        }
-       .shopping-list {
-           list-style: none;
-           padding: 0;
-       }
-       .shopping-item {
-           display: flex;
-           justify-content: space-between;
-           align-items: center;
-           padding: 15px;
-           margin: 10px 0;
-           background-color: #f8f9fa;
+       .result {
+           margin-top: 30px;
+           padding: 20px;
+           background-color: #e8f4ff;
            border-radius: 8px;
            border-left: 4px solid #74b9ff;
-           animation: slideIn 0.3s ease;
+           display: none;
        }
-       @keyframes slideIn {
-           from { opacity: 0; transform: translateX(-20px); }
-           to { opacity: 1; transform: translateX(0); }
+       .result h3 {
+           margin-top: 0;
+           color: #333;
        }
-       .item-text {
-           flex: 1;
+       .result-item {
+           margin: 10px 0;
        }
-       .delete-btn {
-           background-color: #ff7675;
-           padding: 8px 16px;
-           font-size: 14px;
-       }
-       .delete-btn:hover {
-           background-color: #d63031;
-       }
-       .empty-message {
-           text-align: center;
-           color: #999;
-           font-style: italic;
-           padding: 20px;
+       .result-item strong {
+           color: #555;
        }
    </style>
 </head>
 <body>
    <div class="container">
-       <h1>Список покупок</h1>
+       <h1>Простая форма</h1>
        
-       <div class="input-group">
-           <input type="text" id="itemInput" placeholder="Введите товар..." onkeypress="handleKeyPress(event)">
-           <button onclick="addItem()">Добавить</button>
-       </div>
+       <form id="userForm">
+           <div class="form-group">
+               <label for="name">Имя:</label>
+               <input type="text" id="name" name="name" required>
+           </div>
+           
+           <div class="form-group">
+               <label for="email">Email:</label>
+               <input type="email" id="email" name="email" required>
+           </div>
+           
+           <div class="form-group">
+               <label for="phone">Телефон:</label>
+               <input type="tel" id="phone" name="phone">
+           </div>
+           
+           <div class="form-group">
+               <label for="city">Город:</label>
+               <select id="city" name="city">
+                   <option value="">Выберите город</option>
+                   <option value="moscow">Москва</option>
+                   <option value="spb">Санкт-Петербург</option>
+                   <option value="kazan">Казань</option>
+                   <option value="other">Другой</option>
+               </select>
+           </div>
+           
+           <div class="form-group">
+               <label for="message">Сообщение:</label>
+               <textarea id="message" name="message" placeholder="Введите ваше сообщение..."></textarea>
+           </div>
+           
+           <button type="button" onclick="submitForm()">Отправить</button>
+       </form>
        
-       <ul class="shopping-list" id="shoppingList">
-           <li class="empty-message">Список покупок пуст</li>
-       </ul>
-       
-       <div style="text-align: center; margin-top: 20px;">
-           <button onclick="clearList()" style="background-color: #636e72;">Очистить список</button>
+       <div class="result" id="result">
+           <h3>Данные формы:</h3>
+           <div class="result-item"><strong>Имя:</strong> <span id="resultName"></span></div>
+           <div class="result-item"><strong>Email:</strong> <span id="resultEmail"></span></div>
+           <div class="result-item"><strong>Телефон:</strong> <span id="resultPhone"></span></div>
+           <div class="result-item"><strong>Город:</strong> <span id="resultCity"></span></div>
+           <div class="result-item"><strong>Сообщение:</strong> <span id="resultMessage"></span></div>
        </div>
    </div>
 
    <script>
-       function addItem() {
-           const input = document.getElementById('itemInput');
-           const itemText = input.value.trim();
+       function submitForm() {
+           // Получаем значения из формы
+           const name = document.getElementById('name').value;
+           const email = document.getElementById('email').value;
+           const phone = document.getElementById('phone').value;
+           const city = document.getElementById('city').value;
+           const message = document.getElementById('message').value;
            
-           if (itemText === '') return;
-           
-           const shoppingList = document.getElementById('shoppingList');
-           
-           // Убираем сообщение о пустом списке
-           if (shoppingList.querySelector('.empty-message')) {
-               shoppingList.innerHTML = '';
+           // Проверяем обязательные поля
+           if (!name || !email) {
+               alert('Пожалуйста, заполните обязательные поля (Имя и Email)');
+               return;
            }
            
-           const listItem = document.createElement('li');
-           listItem.className = 'shopping-item';
-           listItem.innerHTML = `
-               <span class="item-text">${itemText}</span>
-               <button class="delete-btn" onclick="removeItem(this)">Удалить</button>
-           `;
+           // Отображаем результаты
+           document.getElementById('resultName').textContent = name || 'Не указано';
+           document.getElementById('resultEmail').textContent = email || 'Не указано';
+           document.getElementById('resultPhone').textContent = phone || 'Не указано';
            
-           shoppingList.appendChild(listItem);
-           input.value = '';
-           input.focus();
+           // Преобразуем значение города
+           const cityMap = {
+               'moscow': 'Москва',
+               'spb': 'Санкт-Петербург',
+               'kazan': 'Казань',
+               'other': 'Другой'
+           };
+           document.getElementById('resultCity').textContent = cityMap[city] || 'Не указано';
+           
+           document.getElementById('resultMessage').textContent = message || 'Не указано';
+           
+           // Показываем блок с результатами
+           document.getElementById('result').style.display = 'block';
+           
+           // Прокручиваем к результатам
+           document.getElementById('result').scrollIntoView({ behavior: 'smooth' });
        }
-       
-       function removeItem(button) {
-           const listItem = button.parentElement;
-           listItem.style.animation = 'slideOut 0.3s ease';
-           setTimeout(() => {
-               listItem.remove();
-               
-               // Показываем сообщение, если список пуст
-               const shoppingList = document.getElementById('shoppingList');
-               if (shoppingList.children.length === 0) {
-                   shoppingList.innerHTML = '<li class="empty-message">Список покупок пуст</li>';
-               }
-           }, 300);
-       }
-       
-       function clearList() {
-           const shoppingList = document.getElementById('shoppingList');
-           shoppingList.innerHTML = '<li class="empty-message">Список покупок пуст</li>';
-       }
-       
-       function handleKeyPress(event) {
-           if (event.key === 'Enter') {
-               addItem();
-           }
-       }
-       
-       // Добавляем CSS для анимации удаления
-       const style = document.createElement('style');
-       style.textContent = `
-           @keyframes slideOut {
-               from { opacity: 1; transform: translateX(0); }
-               to { opacity: 0; transform: translateX(20px); }
-           }
-       `;
-       document.head.appendChild(style);
    </script>
 </body>
-</html>  
+</html>   
