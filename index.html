@@ -3,270 +3,253 @@
 <head>
    <meta charset="UTF-8">
    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-   <title>Валидация Email</title>
+   <title>Аккордеон</title>
    <style>
        body {
            font-family: Arial, sans-serif;
-           display: flex;
-           flex-direction: column;
-           align-items: center;
-           justify-content: center;
-           height: 100vh;
-           margin: 0;
-           background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+           max-width: 800px;
+           margin: 0 auto;
+           padding: 20px;
+           background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+           min-height: 100vh;
        }
        .container {
-           text-align: center;
            background: white;
            padding: 40px;
            border-radius: 20px;
            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
-           max-width: 500px;
-           width: 90%;
        }
-       .input-group {
-           position: relative;
-           margin: 30px 0;
+       h1 {
+           text-align: center;
+           color: #333;
+           margin-bottom: 30px;
        }
-       input {
-           width: 100%;
-           padding: 15px;
-           font-size: 18px;
-           border: 3px solid #ddd;
+       .accordion {
            border-radius: 10px;
+           overflow: hidden;
+           box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+       }
+       .accordion-item {
+           border-bottom: 1px solid #e0e0e0;
+       }
+       .accordion-item:last-child {
+           border-bottom: none;
+       }
+       .accordion-header {
+           background: linear-gradient(135deg, #667eea, #764ba2);
+           color: white;
+           padding: 20px;
+           cursor: pointer;
+           font-size: 18px;
+           font-weight: bold;
            transition: all 0.3s;
-           box-sizing: border-box;
+           position: relative;
+           display: flex;
+           justify-content: space-between;
+           align-items: center;
        }
-       input:focus {
-           outline: none;
-           border-color: #667eea;
+       .accordion-header:hover {
+           background: linear-gradient(135deg, #5a6fd8, #6a4190);
        }
-       input.valid {
-           border-color: #00b894;
-           background-color: #f0fff4;
+       .accordion-header:after {
+           content: '+';
+           font-size: 24px;
+           transition: transform 0.3s;
        }
-       input.invalid {
-           border-color: #ff7675;
-           background-color: #fff5f5;
+       .accordion-header.active:after {
+           content: '−';
+           transform: rotate(0deg);
+       }
+       .accordion-content {
+           padding: 0;
+           max-height: 0;
+           overflow: hidden;
+           transition: all 0.3s ease;
+           background-color: #f8f9fa;
+       }
+       .accordion-content.active {
+           padding: 20px;
+           max-height: 500px;
+       }
+       .accordion-content p {
+           margin: 0;
+           line-height: 1.6;
+           color: #555;
+       }
+       .accordion-content ul {
+           margin: 10px 0;
+           padding-left: 20px;
+       }
+       .accordion-content li {
+           margin: 5px 0;
+       }
+       .controls {
+           text-align: center;
+           margin-top: 30px;
        }
        button {
-           padding: 15px 30px;
-           font-size: 18px;
+           padding: 12px 24px;
+           font-size: 16px;
            background: linear-gradient(135deg, #667eea, #764ba2);
            color: white;
            border: none;
-           border-radius: 10px;
+           border-radius: 8px;
            cursor: pointer;
            transition: all 0.3s;
            font-weight: bold;
-           width: 100%;
+           margin: 0 5px;
        }
        button:hover {
-           transform: scale(1.02);
+           transform: scale(1.05);
            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
        }
-       .result {
-           margin-top: 30px;
-           padding: 20px;
-           border-radius: 10px;
-           font-size: 18px;
-           font-weight: bold;
-           min-height: 60px;
-           display: flex;
-           align-items: center;
-           justify-content: center;
-           transition: all 0.3s;
-       }
-       .valid-result {
-           background-color: #d4edda;
-           color: #155724;
-           border: 3px solid #c3e6cb;
-       }
-       .invalid-result {
-           background-color: #f8d7da;
-           color: #721c24;
-           border: 3px solid #f5c6cb;
-       }
-       .info-result {
-           background-color: #e2e3e5;
-           color: #383d41;
-           border: 3px solid #d6d8db;
-       }
-       .validation-rules {
-           text-align: left;
-           margin-top: 30px;
-           padding: 20px;
-           background: #f8f9fa;
-           border-radius: 10px;
-           border-left: 4px solid #667eea;
-       }
-       .validation-rules h3 {
-           margin-top: 0;
-           color: #333;
-       }
-       .rule {
-           margin: 10px 0;
-           padding-left: 20px;
-           position: relative;
-       }
-       .rule:before {
-           content: "•";
-           position: absolute;
-           left: 0;
-           color: #667eea;
-           font-weight: bold;
-       }
-       .valid .rule:before {
-           color: #00b894;
-       }
-       .examples {
-           display: grid;
-           grid-template-columns: 1fr 1fr;
-           gap: 10px;
-           margin-top: 20px;
-       }
-       .example {
-           padding: 10px;
-           border-radius: 5px;
-           font-size: 14px;
+       .info {
            text-align: center;
-       }
-       .valid-example {
-           background-color: #d4edda;
-           color: #155724;
-       }
-       .invalid-example {
-           background-color: #f8d7da;
-           color: #721c24;
+           margin-top: 20px;
+           color: #666;
+           font-style: italic;
        }
    </style>
 </head>
 <body>
    <div class="container">
-       <h1>Валидация Email</h1>
-       <p>Проверьте корректность email-адреса:</p>
+       <h1>Аккордеон</h1>
+       <p style="text-align: center; color: #666; margin-bottom: 30px;">
+           Нажмите на заголовки, чтобы раскрыть или скрыть содержимое
+       </p>
        
-       <div class="input-group">
-           <input type="text" id="emailInput" placeholder="example@domain.com" 
-                  oninput="validateEmailLive()" onkeypress="handleKeyPress(event)">
+       <div class="accordion" id="accordion">
+           <div class="accordion-item">
+               <div class="accordion-header">
+                   <span>Что такое HTML?</span>
+               </div>
+               <div class="accordion-content">
+                   <p>HTML (HyperText Markup Language) - это стандартный язык разметки для создания веб-страниц.</p>
+                   <ul>
+                       <li>Определяет структуру веб-страницы</li>
+                       <li>Состоит из элементов (тегов)</li>
+                       <li>Поддерживается всеми браузерами</li>
+                       <li>Основа веб-разработки</li>
+                   </ul>
+               </div>
+           </div>
+           
+           <div class="accordion-item">
+               <div class="accordion-header">
+                   <span>Что такое CSS?</span>
+               </div>
+               <div class="accordion-content">
+                   <p>CSS (Cascading Style Sheets) - это язык стилей, используемый для описания внешнего вида документа, написанного на HTML.</p>
+                   <ul>
+                       <li>Управляет визуальным представлением</li>
+                       <li>Позволяет создавать адаптивный дизайн</li>
+                       <li>Поддерживает анимации и переходы</li>
+                       <li>Разделяет содержание и оформление</li>
+                   </ul>
+               </div>
+           </div>
+           
+           <div class="accordion-item">
+               <div class="accordion-header">
+                   <span>Что такое JavaScript?</span>
+               </div>
+               <div class="accordion-content">
+                   <p>JavaScript - это язык программирования, который позволяет создавать интерактивные веб-страницы.</p>
+                   <ul>
+                       <li>Добавляет интерактивность на сайт</li>
+                       <li>Выполняется на стороне клиента</li>
+                       <li>Поддерживает объектно-ориентированное программирование</li>
+                       <li>Интегрируется с HTML и CSS</li>
+                   </ul>
+                   <p>С помощью JavaScript можно создавать динамический контент, обрабатывать события, работать с API и многое другое.</p>
+               </div>
+           </div>
+           
+           <div class="accordion-item">
+               <div class="accordion-header">
+                   <span>Что такое Responsive Design?</span>
+               </div>
+               <div class="accordion-content">
+                   <p>Responsive Design (адаптивный дизайн) - это подход к веб-дизайну, который делает веб-страницы хорошо отображаемыми на различных устройствах и размерах экранов.</p>
+                   <ul>
+                       <li>Использует медиа-запросы CSS</li>
+                       <li>Гибкие сетки и изображения</li>
+                       <li>Улучшает пользовательский опыт</li>
+                       <li>Повышает SEO-оптимизацию</li>
+                   </ul>
+               </div>
+           </div>
+           
+           <div class="accordion-item">
+               <div class="accordion-header">
+                   <span>Что такое API?</span>
+               </div>
+               <div class="accordion-content">
+                   <p>API (Application Programming Interface) - это набор определений и протоколов для создания и интеграции прикладного программного обеспечения.</p>
+                   <ul>
+                       <li>Позволяет приложениям взаимодействовать друг с другом</li>
+                       <li>Определяет методы и форматы данных</li>
+                       <li>Используется для интеграции сервисов</li>
+                       <li>Упрощает разработку сложных систем</li>
+                   </ul>
+                   <p>REST API - самый популярный тип API в веб-разработке.</p>
+               </div>
+           </div>
        </div>
        
-       <button onclick="validateEmail()">Проверить Email</button>
-       
-       <div class="result info-result" id="result">
-           Введите email для проверки
+       <div class="controls">
+           <button onclick="expandAll()">Раскрыть все</button>
+           <button onclick="collapseAll()">Скрыть все</button>
        </div>
        
-       <div class="validation-rules">
-           <h3>Правила валидного email:</h3>
-           <div class="rule" id="rule1">Должен содержать символ @</div>
-           <div class="rule" id="rule2">Должен иметь домен (часть после @)</div>
-           <div class="rule" id="rule3">Должен иметь точку в домене</div>
-           <div class="rule" id="rule4">Не должен содержать пробелов</div>
-       </div>
-       
-       <div class="examples">
-           <div class="example valid-example">user@mail.com</div>
-           <div class="example valid-example">name.surname@company.org</div>
-           <div class="example invalid-example">usermail.com</div>
-           <div class="example invalid-example">user@mail</div>
+       <div class="info">
+           Аккордеон полезен для организации большого количества информации в компактном виде
        </div>
    </div>
 
    <script>
-       function validateEmail() {
-           const email = document.getElementById('emailInput').value.trim();
-           const result = document.getElementById('result');
-           
-           if (!email) {
-               result.textContent = 'Пожалуйста, введите email';
-               result.className = 'result info-result';
-               return;
-           }
-           
-           const isValid = checkEmailValidity(email);
-           
-           if (isValid) {
-               result.textContent = '✓ Email корректный!';
-               result.className = 'result valid-result';
-           } else {
-               result.textContent = '✗ Email некорректный!';
-               result.className = 'result invalid-result';
-           }
-           
-           // Анимация
-           result.style.animation = 'none';
-           setTimeout(() => {
-               result.style.animation = 'pop 0.5s';
-           }, 10);
-       }
-       
-       function validateEmailLive() {
-           const email = document.getElementById('emailInput').value.trim();
-           const input = document.getElementById('emailInput');
-           
-           if (!email) {
-               input.className = '';
-               updateRules([]);
-               return;
-           }
-           
-           const validation = checkEmailRules(email);
-           const isValid = validation.isValid;
-           const passedRules = validation.passedRules;
-           
-           input.className = isValid ? 'valid' : 'invalid';
-           updateRules(passedRules);
-       }
-       
-       function checkEmailValidity(email) {
-           const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-           return emailRegex.test(email);
-       }
-       
-       function checkEmailRules(email) {
-           const rules = [
-               { id: 'rule1', test: email.includes('@') },
-               { id: 'rule2', test: email.split('@')[1] && email.split('@')[1].length > 0 },
-               { id: 'rule3', test: email.includes('.') && email.split('@')[1] && email.split('@')[1].includes('.') },
-               { id: 'rule4', test: !email.includes(' ') }
-           ];
-           
-           const passedRules = rules.filter(rule => rule.test).map(rule => rule.id);
-           const isValid = rules.every(rule => rule.test);
-           
-           return { isValid, passedRules };
-       }
-       
-       function updateRules(passedRules) {
-           const rules = ['rule1', 'rule2', 'rule3', 'rule4'];
-           rules.forEach(ruleId => {
-               const ruleElement = document.getElementById(ruleId);
-               if (passedRules.includes(ruleId)) {
-                   ruleElement.style.color = '#00b894';
-                   ruleElement.style.fontWeight = 'bold';
-               } else {
-                   ruleElement.style.color = '#721c24';
-                   ruleElement.style.fontWeight = 'normal';
+       // Инициализация аккордеона
+       document.querySelectorAll('.accordion-header').forEach(header => {
+           header.addEventListener('click', function() {
+               const content = this.nextElementSibling;
+               const isActive = content.classList.contains('active');
+               
+               // Закрываем все элементы
+               document.querySelectorAll('.accordion-content').forEach(item => {
+                   item.classList.remove('active');
+               });
+               document.querySelectorAll('.accordion-header').forEach(item => {
+                   item.classList.remove('active');
+               });
+               
+               // Открываем текущий, если он был закрыт
+               if (!isActive) {
+                   content.classList.add('active');
+                   this.classList.add('active');
                }
            });
+       });
+
+       function expandAll() {
+           document.querySelectorAll('.accordion-content').forEach(content => {
+               content.classList.add('active');
+           });
+           document.querySelectorAll('.accordion-header').forEach(header => {
+               header.classList.add('active');
+           });
        }
-       
-       function handleKeyPress(event) {
-           if (event.key === 'Enter') {
-               validateEmail();
-           }
+
+       function collapseAll() {
+           document.querySelectorAll('.accordion-content').forEach(content => {
+               content.classList.remove('active');
+           });
+           document.querySelectorAll('.accordion-header').forEach(header => {
+               header.classList.remove('active');
+           });
        }
-       
-       // Добавляем CSS для анимации
-       const style = document.createElement('style');
-       style.textContent = `
-           @keyframes pop {
-               0% { transform: scale(0.9); opacity: 0; }
-               100% { transform: scale(1); opacity: 1; }
-           }
-       `;
-       document.head.appendChild(style);
+
+       // Открываем первый элемент по умолчанию
+       document.querySelector('.accordion-header').click();
    </script>
 </body>
 </html>   
