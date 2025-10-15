@@ -1,8 +1,9 @@
+<!DOCTYPE html>
 <html lang="ru">
 <head>
    <meta charset="UTF-8">
    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-   <title>Счетчик кликов</title>
+   <title>Калькулятор сложения</title>
    <style>
        body {
            font-family: Arial, sans-serif;
@@ -12,77 +13,70 @@
            justify-content: center;
            height: 100vh;
            margin: 0;
-           background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+           background-color: #f5f5f5;
        }
-       .container {
-           text-align: center;
+       .calculator {
            background: white;
            padding: 40px;
-           border-radius: 15px;
-           box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+           border-radius: 10px;
+           box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+           text-align: center;
+           width: 300px;
        }
-       .counter {
-           font-size: 48px;
-           font-weight: bold;
-           color: #333;
-           margin: 30px 0;
+       input {
+           width: 100%;
+           padding: 12px;
+           margin: 10px 0;
+           border: 2px solid #ddd;
+           border-radius: 5px;
+           font-size: 16px;
+           box-sizing: border-box;
+       }
+       input:focus {
+           border-color: #4CAF50;
+           outline: none;
        }
        button {
-           padding: 15px 30px;
-           font-size: 18px;
-           background-color: #ff6b6b;
+           width: 100%;
+           padding: 12px;
+           background-color: #4CAF50;
            color: white;
            border: none;
-           border-radius: 8px;
+           border-radius: 5px;
+           font-size: 16px;
            cursor: pointer;
-           transition: all 0.3s;
+           margin-top: 10px;
        }
        button:hover {
-           background-color: #ff5252;
-           transform: scale(1.05);
+           background-color: #45a049;
        }
-       .reset-btn {
-           background-color: #4ecdc4;
-           margin-left: 10px;
-       }
-       .reset-btn:hover {
-           background-color: #26a69a;
+       .result {
+           margin-top: 20px;
+           padding: 15px;
+           background-color: #e8f5e8;
+           border-radius: 5px;
+           font-size: 18px;
+           font-weight: bold;
        }
    </style>
 </head>
 <body>
-   <div class="container">
-       <h1>Счетчик кликов</h1>
-       <div class="counter" id="counter">0</div>
-       <div>
-           <button onclick="incrementCounter()">Кликни меня!</button>
-           <button class="reset-btn" onclick="resetCounter()">Сбросить</button>
-       </div>
+   <div class="calculator">
+       <h1>Калькулятор сложения</h1>
+       <input type="number" id="num1" placeholder="Введите первое число">
+       <input type="number" id="num2" placeholder="Введите второе число">
+       <button onclick="calculate()">Сложить</button>
+       <div class="result" id="result">Результат: </div>
    </div>
 
    <script>
-       let count = 0;
-
-       function incrementCounter() {
-           count++;
-           updateCounter();
-       }
-
-       function resetCounter() {
-           count = 0;
-           updateCounter();
-       }
-
-       function updateCounter() {
-           const counterElement = document.getElementById('counter');
-           counterElement.textContent = count;
+       function calculate() {
+           const num1 = parseFloat(document.getElementById('num1').value) || 0;
+           const num2 = parseFloat(document.getElementById('num2').value) || 0;
+           const result = num1 + num2;
            
-           // Анимация
-           counterElement.style.transform = 'scale(1.2)';
-           setTimeout(() => {
-               counterElement.style.transform = 'scale(1)';
-           }, 150);
+           document.getElementById('result').textContent = `Результат: ${num1} + ${num2} = ${result}`;
        }
    </script>
 </body>
-</html>   
+</html>  
