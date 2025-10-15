@@ -3,88 +3,171 @@
 <head>
    <meta charset="UTF-8">
    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-   <title>Показать/Скрыть блок</title>
+   <title>Список покупок</title>
    <style>
        body {
            font-family: Arial, sans-serif;
-           display: flex;
-           flex-direction: column;
-           align-items: center;
-           justify-content: center;
-           height: 100vh;
-           margin: 0;
-           background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
+           max-width: 600px;
+           margin: 0 auto;
+           padding: 20px;
+           background-color: #f8f9fa;
        }
        .container {
-           text-align: center;
            background: white;
-           padding: 40px;
+           padding: 30px;
            border-radius: 15px;
-           box-shadow: 0 8px 25px rgba(0,0,0,0.2);
-           width: 400px;
+           box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+       }
+       h1 {
+           text-align: center;
+           color: #333;
+           margin-bottom: 30px;
+       }
+       .input-group {
+           display: flex;
+           gap: 10px;
+           margin-bottom: 20px;
+       }
+       input {
+           flex: 1;
+           padding: 12px;
+           border: 2px solid #ddd;
+           border-radius: 8px;
+           font-size: 16px;
+       }
+       input:focus {
+           border-color: #74b9ff;
+           outline: none;
        }
        button {
-           padding: 15px 30px;
-           font-size: 16px;
-           background-color: #00b894;
+           padding: 12px 24px;
+           background-color: #74b9ff;
            color: white;
            border: none;
            border-radius: 8px;
            cursor: pointer;
-           transition: all 0.3s;
+           font-size: 16px;
+           transition: background-color 0.3s;
        }
        button:hover {
-           background-color: #00a085;
-           transform: scale(1.05);
+           background-color: #0984e3;
        }
-       .content {
-           margin-top: 20px;
-           padding: 20px;
+       .shopping-list {
+           list-style: none;
+           padding: 0;
+       }
+       .shopping-item {
+           display: flex;
+           justify-content: space-between;
+           align-items: center;
+           padding: 15px;
+           margin: 10px 0;
            background-color: #f8f9fa;
            border-radius: 8px;
-           border-left: 4px solid #00b894;
-           text-align: left;
-           transition: all 0.3s ease;
-           max-height: 500px;
-           overflow: hidden;
+           border-left: 4px solid #74b9ff;
+           animation: slideIn 0.3s ease;
        }
-       .content.hidden {
-           max-height: 0;
-           padding: 0 20px;
-           margin-top: 0;
-           opacity: 0;
+       @keyframes slideIn {
+           from { opacity: 0; transform: translateX(-20px); }
+           to { opacity: 1; transform: translateX(0); }
+       }
+       .item-text {
+           flex: 1;
+       }
+       .delete-btn {
+           background-color: #ff7675;
+           padding: 8px 16px;
+           font-size: 14px;
+       }
+       .delete-btn:hover {
+           background-color: #d63031;
+       }
+       .empty-message {
+           text-align: center;
+           color: #999;
+           font-style: italic;
+           padding: 20px;
        }
    </style>
 </head>
 <body>
    <div class="container">
-       <h1>Показать/Скрыть блок</h1>
-       <button onclick="toggleContent()">Показать/Скрыть</button>
+       <h1>Список покупок</h1>
        
-       <div class="content" id="content">
-           <h3>Скрытый контент</h3>
-           <p>Этот блок можно показывать или скрывать с помощью кнопки.</p>
-           <p>Здесь может быть любая информация: текст, изображения, формы и другие элементы.</p>
-           <ul>
-               <li>Элемент списка 1</li>
-               <li>Элемент списка 2</li>
-               <li>Элемент списка 3</li>
-           </ul>
+       <div class="input-group">
+           <input type="text" id="itemInput" placeholder="Введите товар..." onkeypress="handleKeyPress(event)">
+           <button onclick="addItem()">Добавить</button>
+       </div>
+       
+       <ul class="shopping-list" id="shoppingList">
+           <li class="empty-message">Список покупок пуст</li>
+       </ul>
+       
+       <div style="text-align: center; margin-top: 20px;">
+           <button onclick="clearList()" style="background-color: #636e72;">Очистить список</button>
        </div>
    </div>
 
    <script>
-       function toggleContent() {
-           const content = document.getElementById('content');
-           content.classList.toggle('hidden');
+       function addItem() {
+           const input = document.getElementById('itemInput');
+           const itemText = input.value.trim();
            
-           const button = document.querySelector('button');
-           if (content.classList.contains('hidden')) {
-               button.textContent = 'Показать';
-           } else {
-               button.textContent = 'Скрыть';
+           if (itemText === '') return;
+           
+           const shoppingList = document.getElementById('shoppingList');
+           
+           // Убираем сообщение о пустом списке
+           if (shoppingList.querySelector('.empty-message')) {
+               shoppingList.innerHTML = '';
+           }
+           
+           const listItem = document.createElement('li');
+           listItem.className = 'shopping-item';
+           listItem.innerHTML = `
+               <span class="item-text">${itemText}</span>
+               <button class="delete-btn" onclick="removeItem(this)">Удалить</button>
+           `;
+           
+           shoppingList.appendChild(listItem);
+           input.value = '';
+           input.focus();
+       }
+       
+       function removeItem(button) {
+           const listItem = button.parentElement;
+           listItem.style.animation = 'slideOut 0.3s ease';
+           setTimeout(() => {
+               listItem.remove();
+               
+               // Показываем сообщение, если список пуст
+               const shoppingList = document.getElementById('shoppingList');
+               if (shoppingList.children.length === 0) {
+                   shoppingList.innerHTML = '<li class="empty-message">Список покупок пуст</li>';
+               }
+           }, 300);
+       }
+       
+       function clearList() {
+           const shoppingList = document.getElementById('shoppingList');
+           shoppingList.innerHTML = '<li class="empty-message">Список покупок пуст</li>';
+       }
+       
+       function handleKeyPress(event) {
+           if (event.key === 'Enter') {
+               addItem();
            }
        }
+       
+       // Добавляем CSS для анимации удаления
+       const style = document.createElement('style');
+       style.textContent = `
+           @keyframes slideOut {
+               from { opacity: 1; transform: translateX(0); }
+               to { opacity: 0; transform: translateX(20px); }
+           }
+       `;
+       document.head.appendChild(style);
    </script>
 </body>
-</html>   
+</html>  
