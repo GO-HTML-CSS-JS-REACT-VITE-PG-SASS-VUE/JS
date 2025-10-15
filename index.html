@@ -3,7 +3,7 @@
 <head>
    <meta charset="UTF-8">
    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-   <title>Таймер обратного отсчета</title>
+   <title>Генератор случайных чисел</title>
    <style>
        body {
            font-family: Arial, sans-serif;
@@ -13,174 +13,168 @@
            justify-content: center;
            height: 100vh;
            margin: 0;
-           background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-           color: white;
+           background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
        }
        .container {
            text-align: center;
-           background: rgba(255, 255, 255, 0.1);
+           background: white;
            padding: 40px;
            border-radius: 20px;
-           backdrop-filter: blur(10px);
-           box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+           box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+           max-width: 500px;
+           width: 90%;
        }
-       .timer-display {
-           font-size: 72px;
+       .number-display {
+           font-size: 80px;
            font-weight: bold;
+           color: #333;
            margin: 30px 0;
            font-family: 'Courier New', monospace;
-           text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-       }
-       .progress-bar {
-           width: 100%;
-           height: 20px;
-           background-color: rgba(255,255,255,0.2);
-           border-radius: 10px;
-           margin: 20px 0;
-           overflow: hidden;
-       }
-       .progress {
-           height: 100%;
-           background: linear-gradient(90deg, #ff6b6b, #ffa500);
-           width: 100%;
-           transition: width 1s linear;
-           border-radius: 10px;
-       }
-       .controls {
+           height: 100px;
            display: flex;
-           gap: 10px;
+           align-items: center;
            justify-content: center;
-           margin-top: 20px;
+           background: linear-gradient(135deg, #667eea, #764ba2);
+           -webkit-background-clip: text;
+           -webkit-text-fill-color: transparent;
+           background-clip: text;
        }
        button {
-           padding: 12px 24px;
-           font-size: 16px;
+           padding: 15px 30px;
+           font-size: 18px;
+           background: linear-gradient(135deg, #667eea, #764ba2);
+           color: white;
            border: none;
-           border-radius: 8px;
+           border-radius: 10px;
            cursor: pointer;
            transition: all 0.3s;
            font-weight: bold;
        }
-       .start-btn {
-           background-color: #00b894;
-           color: white;
-       }
-       .start-btn:hover {
-           background-color: #00a085;
+       button:hover {
            transform: scale(1.05);
+           box-shadow: 0 5px 15px rgba(0,0,0,0.2);
        }
-       .pause-btn {
-           background-color: #fdcb6e;
-           color: white;
+       .settings {
+           margin: 20px 0;
+           display: flex;
+           gap: 10px;
+           justify-content: center;
+           align-items: center;
+           flex-wrap: wrap;
        }
-       .pause-btn:hover {
-           background-color: #f39c12;
-           transform: scale(1.05);
+       input {
+           padding: 10px;
+           border: 2px solid #ddd;
+           border-radius: 5px;
+           font-size: 16px;
+           width: 80px;
+           text-align: center;
        }
-       .reset-btn {
-           background-color: #ff7675;
-           color: white;
+       .history {
+           margin-top: 30px;
        }
-       .reset-btn:hover {
-           background-color: #d63031;
-           transform: scale(1.05);
+       .history-list {
+           display: flex;
+           flex-wrap: wrap;
+           gap: 10px;
+           justify-content: center;
+           max-height: 100px;
+           overflow-y: auto;
        }
-       button:disabled {
-           background-color: #636e72;
-           cursor: not-allowed;
-           transform: none;
+       .history-item {
+           background: #f0f0f0;
+           padding: 5px 10px;
+           border-radius: 15px;
+           font-size: 14px;
        }
-       .message {
+       .stats {
            margin-top: 20px;
-           font-size: 18px;
-           font-weight: bold;
-           min-height: 27px;
+           font-size: 14px;
+           color: #666;
        }
    </style>
 </head>
 <body>
    <div class="container">
-       <h1>Таймер обратного отсчета</h1>
-       <div class="timer-display" id="timer">10</div>
+       <h1>Генератор случайных чисел</h1>
        
-       <div class="progress-bar">
-           <div class="progress" id="progress"></div>
+       <div class="settings">
+           <label>От:</label>
+           <input type="number" id="minValue" value="1" min="0">
+           <label>До:</label>
+           <input type="number" id="maxValue" value="100" min="1">
        </div>
        
-       <div class="controls">
-           <button class="start-btn" onclick="startTimer()" id="startBtn">Старт</button>
-           <button class="pause-btn" onclick="pauseTimer()" id="pauseBtn" disabled>Пауза</button>
-           <button class="reset-btn" onclick="resetTimer()" id="resetBtn">Сброс</button>
+       <div class="number-display" id="numberDisplay">
+           ?
        </div>
        
-       <div class="message" id="message"></div>
+       <button onclick="generateNumber()">Сгенерировать число</button>
+       
+       <div class="history">
+           <h3>История:</h3>
+           <div class="history-list" id="historyList">
+               <!-- История будет добавляться здесь -->
+           </div>
+       </div>
+       
+       <div class="stats" id="stats">
+           Сгенерировано чисел: 0
+       </div>
    </div>
 
    <script>
-       let timeLeft = 10;
-       let timerInterval;
-       let isRunning = false;
-       const totalTime = 10;
+       let history = [];
+       let totalGenerated = 0;
 
-       function startTimer() {
-           if (isRunning) return;
+       function generateNumber() {
+           const min = parseInt(document.getElementById('minValue').value) || 0;
+           const max = parseInt(document.getElementById('maxValue').value) || 100;
            
-           isRunning = true;
-           document.getElementById('startBtn').disabled = true;
-           document.getElementById('pauseBtn').disabled = false;
-           document.getElementById('message').textContent = 'Таймер запущен!';
+           if (min >= max) {
+               alert('Минимальное значение должно быть меньше максимального');
+               return;
+           }
            
-           timerInterval = setInterval(() => {
-               timeLeft--;
-               updateDisplay();
-               
-               if (timeLeft <= 0) {
-                   clearInterval(timerInterval);
-                   isRunning = false;
-                   document.getElementById('message').textContent = 'Время вышло!';
-                   document.getElementById('startBtn').disabled = false;
-                   document.getElementById('pauseBtn').disabled = true;
-                   
-                   // Анимация завершения
-                   document.getElementById('timer').style.color = '#ff6b6b';
-                   document.getElementById('timer').style.animation = 'pulse 0.5s infinite';
-               }
-           }, 1000);
+           const randomNumber = Math.floor(Math.random() * (max - min + 1)) + min;
+           const numberDisplay = document.getElementById('numberDisplay');
+           
+           // Анимация
+           numberDisplay.style.animation = 'none';
+           setTimeout(() => {
+               numberDisplay.style.animation = 'pop 0.5s';
+           }, 10);
+           
+           numberDisplay.textContent = randomNumber;
+           
+           // Добавляем в историю
+           history.unshift(randomNumber);
+           if (history.length > 10) {
+               history.pop();
+           }
+           
+           // Обновляем историю
+           updateHistory();
+           
+           // Обновляем статистику
+           totalGenerated++;
+           document.getElementById('stats').textContent = `Сгенерировано чисел: ${totalGenerated}`;
        }
 
-       function pauseTimer() {
-           clearInterval(timerInterval);
-           isRunning = false;
-           document.getElementById('startBtn').disabled = false;
-           document.getElementById('pauseBtn').disabled = true;
-           document.getElementById('message').textContent = 'Таймер на паузе';
+       function updateHistory() {
+           const historyList = document.getElementById('historyList');
+           historyList.innerHTML = history.map(num => 
+               `<div class="history-item">${num}</div>`
+           ).join('');
        }
 
-       function resetTimer() {
-           clearInterval(timerInterval);
-           isRunning = false;
-           timeLeft = totalTime;
-           updateDisplay();
-           document.getElementById('startBtn').disabled = false;
-           document.getElementById('pauseBtn').disabled = true;
-           document.getElementById('message').textContent = '';
-           document.getElementById('timer').style.color = 'white';
-           document.getElementById('timer').style.animation = 'none';
-       }
-
-       function updateDisplay() {
-           document.getElementById('timer').textContent = timeLeft;
-           const progressPercent = (timeLeft / totalTime) * 100;
-           document.getElementById('progress').style.width = `${progressPercent}%`;
-       }
-
-       // Добавляем CSS для анимации пульсации
+       // Добавляем CSS для анимации
        const style = document.createElement('style');
        style.textContent = `
-           @keyframes pulse {
-               0% { transform: scale(1); }
-               50% { transform: scale(1.1); }
-               100% { transform: scale(1); }
+           @keyframes pop {
+               0% { transform: scale(0.8); opacity: 0; }
+               50% { transform: scale(1.2); }
+               100% { transform: scale(1); opacity: 1; }
            }
        `;
        document.head.appendChild(style);
