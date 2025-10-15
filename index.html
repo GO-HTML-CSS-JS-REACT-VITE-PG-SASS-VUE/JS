@@ -3,7 +3,7 @@
 <head>
    <meta charset="UTF-8">
    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-   <title>Смена цвета фона</title>
+   <title>Показать/Скрыть блок</title>
    <style>
        body {
            font-family: Arial, sans-serif;
@@ -13,83 +13,78 @@
            justify-content: center;
            height: 100vh;
            margin: 0;
-           transition: background-color 0.5s ease;
-           background-color: #f0f0f0;
+           background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
        }
        .container {
            text-align: center;
-           background: rgba(255, 255, 255, 0.9);
+           background: white;
            padding: 40px;
            border-radius: 15px;
-           box-shadow: 0 8px 25px rgba(0,0,0,0.1);
-       }
-       .color-buttons {
-           display: grid;
-           grid-template-columns: repeat(2, 1fr);
-           gap: 10px;
-           margin: 20px 0;
+           box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+           width: 400px;
        }
        button {
-           padding: 15px 25px;
+           padding: 15px 30px;
            font-size: 16px;
+           background-color: #00b894;
+           color: white;
            border: none;
            border-radius: 8px;
            cursor: pointer;
-           color: white;
-           font-weight: bold;
-           transition: transform 0.2s;
+           transition: all 0.3s;
        }
        button:hover {
+           background-color: #00a085;
            transform: scale(1.05);
        }
-       .red { background-color: #ff6b6b; }
-       .blue { background-color: #4ecdc4; }
-       .green { background-color: #1dd1a1; }
-       .purple { background-color: #a29bfe; }
-       .orange { background-color: #fdcb6e; }
-       .reset { 
-           background-color: #636e72; 
-           color: white;
-           grid-column: span 2;
-       }
-       .current-color {
+       .content {
            margin-top: 20px;
-           padding: 10px;
-           background: white;
-           border-radius: 5px;
-           font-weight: bold;
+           padding: 20px;
+           background-color: #f8f9fa;
+           border-radius: 8px;
+           border-left: 4px solid #00b894;
+           text-align: left;
+           transition: all 0.3s ease;
+           max-height: 500px;
+           overflow: hidden;
+       }
+       .content.hidden {
+           max-height: 0;
+           padding: 0 20px;
+           margin-top: 0;
+           opacity: 0;
        }
    </style>
 </head>
 <body>
    <div class="container">
-       <h1>Смена цвета фона</h1>
-       <p>Выберите цвет для фона страницы:</p>
+       <h1>Показать/Скрыть блок</h1>
+       <button onclick="toggleContent()">Показать/Скрыть</button>
        
-       <div class="color-buttons">
-           <button class="red" onclick="changeColor('#ff6b6b', 'Красный')">Красный</button>
-           <button class="blue" onclick="changeColor('#4ecdc4', 'Голубой')">Голубой</button>
-           <button class="green" onclick="changeColor('#1dd1a1', 'Зеленый')">Зеленый</button>
-           <button class="purple" onclick="changeColor('#a29bfe', 'Фиолетовый')">Фиолетовый</button>
-           <button class="orange" onclick="changeColor('#fdcb6e', 'Оранжевый')">Оранжевый</button>
-           <button class="reset" onclick="resetColor()">Сбросить</button>
-       </div>
-       
-       <div class="current-color" id="currentColor">
-           Текущий цвет: По умолчанию
+       <div class="content" id="content">
+           <h3>Скрытый контент</h3>
+           <p>Этот блок можно показывать или скрывать с помощью кнопки.</p>
+           <p>Здесь может быть любая информация: текст, изображения, формы и другие элементы.</p>
+           <ul>
+               <li>Элемент списка 1</li>
+               <li>Элемент списка 2</li>
+               <li>Элемент списка 3</li>
+           </ul>
        </div>
    </div>
 
    <script>
-       function changeColor(color, colorName) {
-           document.body.style.backgroundColor = color;
-           document.getElementById('currentColor').textContent = `Текущий цвет: ${colorName}`;
-       }
-
-       function resetColor() {
-           document.body.style.backgroundColor = '#f0f0f0';
-           document.getElementById('currentColor').textContent = 'Текущий цвет: По умолчанию';
+       function toggleContent() {
+           const content = document.getElementById('content');
+           content.classList.toggle('hidden');
+           
+           const button = document.querySelector('button');
+           if (content.classList.contains('hidden')) {
+               button.textContent = 'Показать';
+           } else {
+               button.textContent = 'Скрыть';
+           }
        }
    </script>
 </body>
-</html>  
+</html>   
